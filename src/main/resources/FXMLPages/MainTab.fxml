@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" stylesheets="@../styles/mainTab.css" xmlns="http://javafx.com/javafx/19"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.coursework.controllers.MainTabController">
+    <children>
+        <TableView id="fxml-table-main" fx:id="personTable" editable="true" layoutX="52.0" layoutY="53.0"
+                   prefHeight="222.0" prefWidth="355.0" styleClass="fxml-table" tableMenuButtonVisible="true">
+            <columns>
+                <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Дата"/>
+                <TableColumn fx:id="nameSurnameColumn" prefWidth="150.0" text="Ім`я та прізвище"/>
+                <TableColumn fx:id="valueColumn" prefWidth="115.0" text="Сума витрат"/>
+            </columns>
+        </TableView>
+        <Button fx:id="addButton" layoutX="52.0" layoutY="286.0" mnemonicParsing="false" text="Додати звіт"/>
+        <Button fx:id="calculatingButton" layoutX="268.0" layoutY="286.0" mnemonicParsing="false"
+                text="Обчислити і отримати"/>
+    </children>
+</AnchorPane>
