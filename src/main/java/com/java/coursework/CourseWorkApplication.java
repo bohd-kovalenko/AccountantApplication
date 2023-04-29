@@ -1,11 +1,11 @@
 package com.java.coursework;
 
 import com.java.coursework.models.Person;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 
 @SpringBootApplication
 public class CourseWorkApplication {
@@ -15,7 +15,7 @@ public class CourseWorkApplication {
     }
 
     @Bean
-    public ArrayList<Person> hashtable(){
-        return new ArrayList<>();
+    public ObservableList<Person> hashtable() {
+        return FXCollections.observableArrayList();
     }
 }

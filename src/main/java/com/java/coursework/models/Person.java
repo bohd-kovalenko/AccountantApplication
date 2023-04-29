@@ -3,13 +3,14 @@ package com.java.coursework.models;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class Person {
     private String nameSurname;
     private LocalDate date;
@@ -17,6 +18,7 @@ public class Person {
     private Integer perDiemDays;
     private Double travelSumValue;
     private Double othersSumValue;
+    private Double costPerDayField;
     private Double value;
 
 }

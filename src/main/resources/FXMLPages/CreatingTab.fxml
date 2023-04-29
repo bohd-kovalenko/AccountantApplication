@@ -29,9 +29,10 @@
         <Label layoutX="17.0" layoutY="270.0" text="Дата"/>
         <DatePicker id="dateField" fx:id="dateField" layoutX="17.0" layoutY="303.0"/>
         <Button id="returnButton" fx:id="returnButton" layoutX="471.0" layoutY="338.0" mnemonicParsing="false"
-                prefHeight="30.0"
-                prefWidth="74.0" text="Назад"/>
+                prefHeight="30.0" prefWidth="74.0" text="Назад"/>
         <TextField id="othersSumValueField" fx:id="othersSumValueField" layoutX="18.0" layoutY="232.0" prefHeight="26.0"
                    prefWidth="151.0"/>
+        <TextField id="costPerDayField" fx:id="costPerDayField" layoutX="342.0" layoutY="196.0" prefHeight="26.0"
+                   prefWidth="104.0"/>
     </children>
 </AnchorPane>

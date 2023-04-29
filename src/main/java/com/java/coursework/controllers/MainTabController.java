@@ -1,6 +1,7 @@
 package com.java.coursework.controllers;
 
 import com.java.coursework.models.Person;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,9 +10,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +25,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -30,7 +35,7 @@ import java.util.ResourceBundle;
 public class MainTabController implements Initializable {
     private final Stage stage;
     private final ApplicationContext applicationContext;
-    private final ArrayList<Person> mainList;
+    private final ObservableList<Person> mainList;
     @Value("${creating-tab.fxml.path}")
     private Resource resource;
     @FXML
@@ -38,9 +43,9 @@ public class MainTabController implements Initializable {
     @FXML
     private TableColumn<Person, String> nameSurnameColumn;
     @FXML
-    private TableColumn<Person, Integer> valueColumn;
+    private TableColumn<Person, Double> valueColumn;
     @FXML
-    private TableColumn<Person, Integer> dateColumn;
+    private TableColumn<Person, LocalDate> dateColumn;
     @FXML
     private Button addButton;
     @FXML
@@ -49,6 +54,10 @@ public class MainTabController implements Initializable {
     @Override
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        nameSurnameColumn.setCellValueFactory(new PropertyValueFactory<>("nameSurname"));
+        valueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        personTable.setItems(mainList);
         addButton.setOnAction(this::onAddButtonClick);
 
     }
@@ -64,4 +73,5 @@ public class MainTabController implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+
 }
