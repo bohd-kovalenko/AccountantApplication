@@ -34,5 +34,15 @@
                    prefWidth="151.0"/>
         <TextField id="costPerDayField" fx:id="costPerDayField" layoutX="342.0" layoutY="196.0" prefHeight="26.0"
                    prefWidth="104.0"/>
+        <Label fx:id="costPerDayErrorLabel" layoutX="339.0" layoutY="187.0" text="Введіть числове значення!"
+               textFill="RED" visible="false"/>
+        <Label id="leavingDayCountErrorLabel" fx:id="leavingDayCountErrorLabel" layoutX="185.0" layoutY="187.0"
+               text="Не вірна кількість днів!" textFill="RED" visible="false"/>
+        <Label id="othersSumValueErrorLabel" fx:id="othersSumValueErrorLabel" layoutX="14.0" layoutY="223.0"
+               text="Не вірне значення!" visible="false"/>
+        <Label id="travelSumValueErrorLabel" fx:id="travelSumValueErrorLabel" layoutX="19.0" layoutY="136.0"
+               text="Не вірне значення!" visible="false"/>
+        <Label id="perDiemDaysCountErrorLabel" fx:id="perDiemDaysCountErrorLabel" layoutX="185.0" layoutY="84.0"
+               text="Не вірна кількість днів!" visible="false"/>
     </children>
 </AnchorPane>

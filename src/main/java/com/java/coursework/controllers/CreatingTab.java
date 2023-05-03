@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
@@ -46,11 +47,20 @@ public class CreatingTab implements Initializable {
     private TextField othersSumValueField;
     @FXML
     private TextField costPerDayField;
-    private Integer value;
     @FXML
     private Button creationButton;
     @FXML
     private Button returnButton;
+    @FXML
+    private Label costPerDayErrorLabel;
+    @FXML
+    private Label leavingDayCountErrorLabel;
+    @FXML
+    private Label othersSumValueErrorLabel;
+    @FXML
+    private Label travelSumValueErrorLabel;
+    @FXML
+    private Label perDiemDaysCountErrorLabel;
     private Person person;
 
     @Override
@@ -69,6 +79,13 @@ public class CreatingTab implements Initializable {
 
     @FXML
     private void onCreationButtonClick(ActionEvent actionEvent) {
+        setAllErrorLabelsToDefaults();
+        if (validateTravelSumValue() &
+                validateOthersSumValue() &
+                validateCostPerDay() &
+                validateLeavingDayCount() &
+                validatePerDiemDays()) ;
+        else return;
         Integer leavingDayCountParsed = Integer.parseInt(leavingDayCountField.getText()),
                 perDiemDaysParsed = Integer.parseInt(perDiemDaysField.getText());
         Double travelSumValueParsed = Double.parseDouble(travelSumValueField.getText()),
@@ -102,4 +119,71 @@ public class CreatingTab implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+
+    private boolean validateDoubleValue(String value) {
+        try {
+            Double.parseDouble(value);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateIntegerValue(String value) {
+        try {
+            Integer.parseInt(value);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private void setAllErrorLabelsToDefaults() {
+        othersSumValueErrorLabel.setVisible(false);
+        travelSumValueErrorLabel.setVisible(false);
+        costPerDayErrorLabel.setVisible(false);
+        perDiemDaysCountErrorLabel.setVisible(false);
+        leavingDayCountErrorLabel.setVisible(false);
+    }
+
+    public boolean validateCostPerDay() {
+        if (validateDoubleValue(costPerDayField.getText())) return true;
+        else {
+            costPerDayErrorLabel.setVisible(true);
+            return false;
+        }
+    }
+
+    public boolean validateTravelSumValue() {
+        if (validateDoubleValue(travelSumValueField.getText())) return true;
+        else {
+            travelSumValueErrorLabel.setVisible(true);
+            return false;
+        }
+    }
+
+    public boolean validateOthersSumValue() {
+        if (validateDoubleValue(othersSumValueField.getText())) return true;
+        else {
+            othersSumValueErrorLabel.setVisible(true);
+            return false;
+        }
+    }
+
+    public boolean validateLeavingDayCount() {
+        if (validateIntegerValue(leavingDayCountField.getText())) return true;
+        else {
+            leavingDayCountErrorLabel.setVisible(true);
+            return false;
+        }
+    }
+
+    public boolean validatePerDiemDays() {
+        if (validateIntegerValue(perDiemDaysField.getText())) return true;
+        else {
+            perDiemDaysCountErrorLabel.setVisible(true);
+            return false;
+        }
+    }
+
 }
