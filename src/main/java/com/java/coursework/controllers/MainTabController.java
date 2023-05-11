@@ -10,12 +10,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,6 @@ import org.springframework.stereotype.Controller;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 @Controller
@@ -59,7 +58,15 @@ public class MainTabController implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         personTable.setItems(mainList);
         addButton.setOnAction(this::onAddButtonClick);
-
+        personTable.setRowFactory(trf -> {
+            TableRow<Person> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    onTableRowClick(event, row.getItem());
+                }
+            });
+            return row;
+        });
     }
 
     @SneakyThrows
@@ -68,10 +75,31 @@ public class MainTabController implements Initializable {
         FXMLLoader loader = new FXMLLoader(resource.getURL());
         loader.setControllerFactory(applicationContext::getBean);
         Parent parent = loader.load();
+        ((CreatingTab) loader.getController()).initPerson(null);
         Scene scene = new Scene(parent);
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
     }
+
+    @SneakyThrows
+    private void onTableRowClick(MouseEvent event, Person person) {
+        FXMLLoader loader = new FXMLLoader(resource.getURL());
+        loader.setControllerFactory(applicationContext::getBean);
+        Parent parent = loader.load();
+        ((CreatingTab) loader.getController()).initPerson(person);
+        Scene scene = new Scene(parent);
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+//    private void changeScene()
+//    private void pdfSummaryCreation(){
+//        try(PDDocument document = Loader.loadPDF(new File("src/main/resources/readyToUseDocs/abc.pdf"))){
+//            document.addSignature();
+//        }catch (Exception e){
+//
+//        }
+//    }
 
 }

@@ -61,13 +61,35 @@ public class CreatingTab implements Initializable {
     private Label travelSumValueErrorLabel;
     @FXML
     private Label perDiemDaysCountErrorLabel;
+    @FXML
+    private Label accomodationGeneralValue;
+    @FXML
+    private Label perDiemGeneralValue;
+    @FXML
+    private Label generalValue;
+    @FXML
+    private Label limitRateLabel;
     private Person person;
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void initPerson(Person person) {
+        if (person == null) {
+            this.person = new Person();
+            mainList.add(this.person);
+        } else {
+            this.person = person;
+            initAllFieldValues(this.person);
+            creationButton.setText("Обновити");
+        }
+    }
 
     @Override
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        person = new Person();
-        mainList.add(person);
+        limitRateLabel.setText(limitRate);
         returnButton.setOnAction(this::onReturnButtonClick);
         creationButton.setOnAction(this::onCreationButtonClick);
     }
@@ -104,6 +126,7 @@ public class CreatingTab implements Initializable {
         person.setOthersSumValue(othersSumValueParsed);
         person.setCostPerDayField(costPerDayParsed);
         person.setValue(value);
+        person.setPerDiemValue(Double.parseDouble(limitRate) * perDiemDaysParsed);
         comeBackToMainScene(actionEvent);
     }
 
@@ -184,6 +207,23 @@ public class CreatingTab implements Initializable {
             perDiemDaysCountErrorLabel.setVisible(true);
             return false;
         }
+    }
+
+    private void initAllFieldValues(Person person) {
+        nameSurnameField.appendText(person.getNameSurname());
+        dateField.setValue(person.getDate());
+        leavingDayCountField.appendText(person.getLeavingDayCount().toString());
+        perDiemDaysField.appendText(person.getPerDiemDays().toString());
+        travelSumValueField.appendText(person.getTravelSumValue().toString());
+        othersSumValueField.appendText(person.getOthersSumValue().toString());
+        costPerDayField.appendText(person.getCostPerDayField().toString());
+        initAllSums(person);
+    }
+
+    private void initAllSums(Person person) {
+        perDiemGeneralValue.setText(Double.toString(person.getPerDiemValue()));
+        accomodationGeneralValue.setText(Double.toString(person.getCostPerDayField() * person.getLeavingDayCount()));
+        generalValue.setText(Double.toString(person.getValue()));
     }
 
 }

@@ -20,5 +20,6 @@ public class Person {
     private Double othersSumValue;
     private Double costPerDayField;
     private Double value;
+    private Double perDiemValue;
 
 }
