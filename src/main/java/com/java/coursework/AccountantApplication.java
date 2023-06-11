@@ -19,17 +19,20 @@ public class AccountantApplication extends Application {
     private ConfigurableApplicationContext applicationContext;
     private Stage stage;
 
+    // Ініціалізація додатку
     @Override
     public void init() {
         applicationContext = new SpringApplicationBuilder(CourseWorkApplication.class).run();
     }
 
+    // Зупинка додатку
     @Override
     public void stop() {
         applicationContext.close();
         Platform.exit();
     }
 
+    // Запуск додатку
     @Override
     public void start(Stage stage) {
         applicationContext.publishEvent(new StageReadyEvent(stage));
@@ -37,11 +40,13 @@ public class AccountantApplication extends Application {
         stage.show();
     }
 
+    // Бін для об'єкту Stage
     @Bean
     public Stage stage() {
         return this.stage;
     }
 
+    // Внутрішній клас, який представляє подію готовності Stage
     static class StageReadyEvent extends ApplicationEvent {
         public StageReadyEvent(Stage stage) {
             super(stage);

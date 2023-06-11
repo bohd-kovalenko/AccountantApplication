@@ -1,34 +1,38 @@
 package com.java.coursework.controllers;
 
 import com.java.coursework.models.Person;
+import com.java.coursework.services.IndexService;
+import com.java.coursework.services.PersonService;
+import com.java.coursework.services.SceneService;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @RequiredArgsConstructor
-public class CreatingTab implements Initializable {
-    private final ObservableList<Person> mainList;
-    private final ApplicationContext applicationContext;
+public class CreatingTabController implements Initializable {
+    private final AtomicInteger globalIndex;
+    private final ObservableList<Person> observableList;
+    private final SceneService sceneService;
+    private final PersonService personService;
+    private final IndexService indexService;
     @Value("${main-stage.fxml.path}")
     private Resource mainStageResource;
     @Value("${limit-rate}")
@@ -69,37 +73,44 @@ public class CreatingTab implements Initializable {
     private Label generalValue;
     @FXML
     private Label limitRateLabel;
+    @FXML
+    private Button deletionButton;
     private Person person;
+    private boolean isUpdateButton;
 
-    public Person getPerson() {
-        return person;
-    }
-
+    // Ініціалізує об'єкт Person для створення нової особи або оновлення існуючої особи.
+    // Якщо person є нульовим, то створюється новий об'єкт Person.
+    // В іншому випадку використовується переданий об'єкт для ініціалізації полів усіх полів у формі.
+    // Кнопка створення отримує текст "Обновити", а кнопка видалення стає видимою.
     public void initPerson(Person person) {
         if (person == null) {
             this.person = new Person();
-            mainList.add(this.person);
+            isUpdateButton = false;
         } else {
             this.person = person;
             initAllFieldValues(this.person);
             creationButton.setText("Обновити");
+            isUpdateButton = true;
+            deletionButton.setVisible(true);
         }
     }
 
+    //Ініціалізація сторінки додавання звіту
     @Override
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
         limitRateLabel.setText(limitRate);
         returnButton.setOnAction(this::onReturnButtonClick);
         creationButton.setOnAction(this::onCreationButtonClick);
+        deletionButton.setOnAction(this::onDeletionButtonClick);
     }
 
-    @FXML
+    // Оброблює подію натискання кнопки "Повернутися".
     private void onReturnButtonClick(ActionEvent event) {
-        comeBackToMainScene(event);
+        comeBackToMainScene(returnButton);
     }
 
-    @FXML
+    // Оброблює подію натискання кнопки "Створити".
     private void onCreationButtonClick(ActionEvent actionEvent) {
         setAllErrorLabelsToDefaults();
         if (validateTravelSumValue() &
@@ -108,41 +119,55 @@ public class CreatingTab implements Initializable {
                 validateLeavingDayCount() &
                 validatePerDiemDays()) ;
         else return;
-        Integer leavingDayCountParsed = Integer.parseInt(leavingDayCountField.getText()),
-                perDiemDaysParsed = Integer.parseInt(perDiemDaysField.getText());
-        Double travelSumValueParsed = Double.parseDouble(travelSumValueField.getText()),
-                othersSumValueParsed = Double.parseDouble(othersSumValueField.getText()),
-                costPerDayParsed = Double.parseDouble(costPerDayField.getText()),
-                limitRateParsed = Double.parseDouble(limitRate),
-                value = travelSumValueParsed +
-                        othersSumValueParsed +
-                        costPerDayParsed * leavingDayCountParsed +
-                        limitRateParsed * perDiemDaysParsed;
         person.setNameSurname(nameSurnameField.getText());
         person.setDate(dateField.getValue());
-        person.setLeavingDayCount(leavingDayCountParsed);
-        person.setPerDiemDays(perDiemDaysParsed);
-        person.setTravelSumValue(travelSumValueParsed);
-        person.setOthersSumValue(othersSumValueParsed);
-        person.setCostPerDayField(costPerDayParsed);
-        person.setValue(value);
-        person.setPerDiemValue(Double.parseDouble(limitRate) * perDiemDaysParsed);
-        comeBackToMainScene(actionEvent);
+        person.setLeavingDayCount(new BigDecimal(leavingDayCountField.getText()));
+        person.setPerDiemDays(new BigDecimal(perDiemDaysField.getText()));
+        person.setTravelSumValue(new BigDecimal(travelSumValueField.getText()));
+        person.setOthersSumValue(new BigDecimal(othersSumValueField.getText()));
+        person.setCostPerDayField(new BigDecimal(costPerDayField.getText()));
+        person.setPerDiemValue(new BigDecimal(limitRate).multiply(person.getPerDiemDays()));
+        person.setLeavingSumValue(person.getLeavingDayCount().multiply(person.getCostPerDayField()));
+        person.setValue(person.getTravelSumValue()
+                .add(person.getOthersSumValue())
+                .add(person.getCostPerDayField().multiply(person.getLeavingDayCount()))
+                .add(person.getPerDiemValue()));
+        if (isUpdateButton) {
+            for (int i = 0; i < observableList.size(); i++) {
+                if (observableList.get(i).getIndex() == person.getIndex()) {
+                    observableList.remove(i);
+                    break;
+                }
+            }
+            observableList.add(person);
+        } else {
+            this.person.setIndex(globalIndex.getAndIncrement());
+            indexService.incrementIndexInFile();
+            observableList.add(person);
+            personService.appendPersonsToFile(List.of(person));
+        }
+        comeBackToMainScene(creationButton);
     }
 
+    // Оброблює подію натискання кнопки "Видалити".
+    private void onDeletionButtonClick(ActionEvent actionEvent) {
+        for (int i = 0; i < observableList.size(); i++) {
+            if (observableList.get(i).getIndex() == person.getIndex()) {
+                personService.deletePersonFromFileByIndex(i);
+                observableList.remove(i);
+                break;
+            }
+        }
+        comeBackToMainScene(deletionButton);
+    }
+
+    // Повертається до головного сценарію.
     @SneakyThrows
-    private void comeBackToMainScene(ActionEvent event) {
-        FXMLLoader loader = new FXMLLoader(mainStageResource.getURL());
-        loader.setControllerFactory(applicationContext::getBean);
-        Parent parent = loader.load();
-        Scene scene = new Scene(parent);
-        Stage stage = (Stage) ((Node) event.getSource())
-                .getScene()
-                .getWindow();
-        stage.setScene(scene);
-        stage.show();
+    private void comeBackToMainScene(Node node) {
+        sceneService.switchScene(node, mainStageResource);
     }
 
+    // Перевіряє, чи є значення типу double.
     private boolean validateDoubleValue(String value) {
         try {
             Double.parseDouble(value);
@@ -152,6 +177,7 @@ public class CreatingTab implements Initializable {
         return true;
     }
 
+    // Перевіряє, чи є значення типу integer.
     private boolean validateIntegerValue(String value) {
         try {
             Integer.parseInt(value);
@@ -161,6 +187,7 @@ public class CreatingTab implements Initializable {
         return true;
     }
 
+    // Приховує всі помилкові мітки.
     private void setAllErrorLabelsToDefaults() {
         othersSumValueErrorLabel.setVisible(false);
         travelSumValueErrorLabel.setVisible(false);
@@ -169,6 +196,7 @@ public class CreatingTab implements Initializable {
         leavingDayCountErrorLabel.setVisible(false);
     }
 
+    // Перевіряє правильність значення "Ціна за день".
     public boolean validateCostPerDay() {
         if (validateDoubleValue(costPerDayField.getText())) return true;
         else {
@@ -177,6 +205,7 @@ public class CreatingTab implements Initializable {
         }
     }
 
+    // Перевіряє правильність значення "Вартість подорожі".
     public boolean validateTravelSumValue() {
         if (validateDoubleValue(travelSumValueField.getText())) return true;
         else {
@@ -185,6 +214,7 @@ public class CreatingTab implements Initializable {
         }
     }
 
+    // Перевіряє правильність значення "Інші витрати".
     public boolean validateOthersSumValue() {
         if (validateDoubleValue(othersSumValueField.getText())) return true;
         else {
@@ -193,6 +223,7 @@ public class CreatingTab implements Initializable {
         }
     }
 
+    // Перевіряє правильність значення "Кількість днів виїзду".
     public boolean validateLeavingDayCount() {
         if (validateIntegerValue(leavingDayCountField.getText())) return true;
         else {
@@ -201,6 +232,7 @@ public class CreatingTab implements Initializable {
         }
     }
 
+    // Перевіряє правильність значення "Кількість днів дієти".
     public boolean validatePerDiemDays() {
         if (validateIntegerValue(perDiemDaysField.getText())) return true;
         else {
@@ -209,6 +241,7 @@ public class CreatingTab implements Initializable {
         }
     }
 
+    // Ініціалізує всі поля форми значеннями об'єкта Person.
     private void initAllFieldValues(Person person) {
         nameSurnameField.appendText(person.getNameSurname());
         dateField.setValue(person.getDate());
@@ -220,10 +253,10 @@ public class CreatingTab implements Initializable {
         initAllSums(person);
     }
 
+    // Ініціалізує значення загальних сум.
     private void initAllSums(Person person) {
-        perDiemGeneralValue.setText(Double.toString(person.getPerDiemValue()));
-        accomodationGeneralValue.setText(Double.toString(person.getCostPerDayField() * person.getLeavingDayCount()));
-        generalValue.setText(Double.toString(person.getValue()));
+        perDiemGeneralValue.setText(person.getPerDiemValue().toString());
+        accomodationGeneralValue.setText(person.getLeavingSumValue().toString());
+        generalValue.setText(person.getValue().toString());
     }
-
 }

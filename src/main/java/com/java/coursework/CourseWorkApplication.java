@@ -1,21 +1,13 @@
 package com.java.coursework;
 
-import com.java.coursework.models.Person;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
 
 @SpringBootApplication
 public class CourseWorkApplication {
 
+    // Головний метод, який запускає додаток
     public static void main(String[] args) {
+        // Виклик методу launch() з класу AccountantApplication для запуску додатку
         AccountantApplication.launch(AccountantApplication.class, args);
-    }
-
-    @Bean
-    public ObservableList<Person> hashtable() {
-        return FXCollections.observableArrayList();
     }
 }

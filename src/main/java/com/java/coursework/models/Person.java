@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -12,14 +13,15 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 public class Person {
+    private int index;
     private String nameSurname;
     private LocalDate date;
-    private Integer leavingDayCount;
-    private Integer perDiemDays;
-    private Double travelSumValue;
-    private Double othersSumValue;
-    private Double costPerDayField;
-    private Double value;
-    private Double perDiemValue;
-
+    private BigDecimal leavingDayCount;
+    private BigDecimal perDiemDays;
+    private BigDecimal travelSumValue;
+    private BigDecimal othersSumValue;
+    private BigDecimal costPerDayField;
+    private BigDecimal value;
+    private BigDecimal perDiemValue;
+    private BigDecimal leavingSumValue;
 }

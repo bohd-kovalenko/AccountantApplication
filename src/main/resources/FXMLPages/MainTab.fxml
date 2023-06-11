@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-            prefWidth="600.0" stylesheets="@../styles/mainTab.css" xmlns="http://javafx.com/javafx/19"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.java.coursework.controllers.MainTabController">
-    <children>
-        <TableView id="fxml-table-main" fx:id="personTable" editable="true" layoutX="52.0" layoutY="53.0"
-                   prefHeight="222.0" prefWidth="355.0" styleClass="fxml-table" tableMenuButtonVisible="true">
+<?import javafx.scene.layout.*?>
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.java.coursework.controllers.MainTabController">
+    <center>
+        <TableView id="fxml-table-main" fx:id="personTable" editable="true" prefHeight="222.0" prefWidth="360.0"
+                   style="-fx-border-color: linear-gradient(from 0% 0% to 100% 100%, rgba(255,115,70,1) 0%, rgba(255,65,93,1) 100%); -fx-border-radius: 2.5%; -fx-border-width: 6px;"
+                   styleClass="fxml-table" tableMenuButtonVisible="true" BorderPane.alignment="CENTER">
             <columns>
-                <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Дата"/>
-                <TableColumn fx:id="nameSurnameColumn" prefWidth="150.0" text="Ім`я та прізвище"/>
-                <TableColumn fx:id="valueColumn" prefWidth="115.0" text="Сума витрат"/>
+                <TableColumn fx:id="dateColumn" prefWidth="75.0" styleClass="table-colum" text="Дата"/>
+                <TableColumn fx:id="nameSurnameColumn" prefWidth="150.0" styleClass="table-colum"
+                             text="Ім`я та прізвище"/>
+                <TableColumn fx:id="valueColumn" prefWidth="115.0" styleClass="table-colum" text="Сума витрат"/>
             </columns>
         </TableView>
-        <Button fx:id="addButton" layoutX="52.0" layoutY="286.0" mnemonicParsing="false" text="Додати звіт"/>
-        <Button fx:id="calculatingButton" layoutX="268.0" layoutY="286.0" mnemonicParsing="false"
-                text="Обчислити і отримати"/>
-    </children>
-</AnchorPane>
+    </center>
+    <bottom>
+        <GridPane prefHeight="46.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <Button fx:id="addButton" mnemonicParsing="false"
+                        style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, rgba(255,115,70,1) 0%, rgba(255,65,93,1) 100%);;"
+                        text="Додати звіт" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER"
+                        prefHeight="30.0" prefWidth="90.0"/>
+                <Button fx:id="calculatingButton" mnemonicParsing="false"
+                        style="-fx-background-color: linear-gradient(from 0% 0% to 100% 100%, rgba(255,115,70,1) 0%, rgba(255,65,93,1) 100%);"
+                        text="Обчислити і отримати" textFill="WHITE" GridPane.halignment="CENTER" prefHeight="30.0"
+                        prefWidth="180.0"/>
+            </children>
+        </GridPane>
+    </bottom>
+</BorderPane>
